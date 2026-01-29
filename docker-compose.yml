@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+    app:
+        image: webdevops/php-nginx:8.4
+        ports:
+            - "8080:80"
+        volumes:
+            - .:/app
+        environment:
+            WEB_DOCUMENT_ROOT: /app/public
+    postgres:
+        image: postgres:16
+        environment:
+            POSTGRES_DB: file_conversion_db
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+volumes:
+    pgdata:
