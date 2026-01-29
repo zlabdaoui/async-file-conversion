@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
     app:
         image: webdevops/php-nginx:8.4
@@ -9,6 +7,7 @@ services:
             - .:/app
         environment:
             WEB_DOCUMENT_ROOT: /app/public
+        working_dir: /app
     postgres:
         image: postgres:16
         environment:
