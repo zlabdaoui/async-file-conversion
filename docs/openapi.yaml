@@ -1,0 +1,136 @@
+openapi: 3.1.0
+info:
+    title: Async File Conversion
+    version: 1.0.0
+    description: API for creating and fetching file conversion jobs.
+
+servers:
+    - url: http://localhost:8080
+      description: Local development server
+
+paths:
+    /file-conversions:
+        post:
+            summary: Create a new file conversion job
+            operationId: createFileConversion
+            requestBody:
+                required: true
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            required:
+                                - file
+                                - target_format
+                            properties:
+                                file:
+                                    type: string
+                                    format: binary
+                                    description: The file to convert (CSV, JSON, XLSX, ODS)
+                                target_format:
+                                    type: string
+                                    enum: [JSON, XML]
+                                    description: Target output format
+            responses:
+                '202':
+                    description: Conversion job accepted
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FileConversionResponse'
+                '400':
+                    description: Invalid request
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+                '422':
+                    description: Validation error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    errors:
+                                        type: object
+                                        additionalProperties:
+                                            type: string
+                                        description: Map of field names to error messages
+                '500':
+                    description: Internal server error (e.g., file storage failed)
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+
+    /file-conversions/{id}:
+        get:
+            summary: Get a file conversion job by ID
+            operationId: getFileConversionById
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: ID of the file conversion job
+            responses:
+                '200':
+                    description: File conversion found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FileConversionResponse'
+                '400':
+                    description: Invalid ID format
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+                '404':
+                    description: File conversion not found
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+
+
+components:
+    schemas:
+        FileConversionResponse:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                original_filename:
+                    type: string
+                stored_filename:
+                    type: string
+                original_format:
+                    type: string
+                target_format:
+                    type: string
+                status:
+                    type: string
+                created_at:
+                    type: string
+                    format: date-time
+                completed_at:
+                    type: string
+                    format: date-time
+                result_filename:
+                    type: string

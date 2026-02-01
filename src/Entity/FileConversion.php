@@ -4,34 +4,33 @@ namespace App\Entity;
 
 use App\Repository\FileConversionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: FileConversionRepository::class)]
 class FileConversion
 {
-    public const string STATUS_PENDING    = 'pending';
-    public const string STATUS_PROCESSING = 'processing';
-    public const string STATUS_DONE       = 'done';
-    public const string STATUS_FAILED     = 'failed';
-
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
+    private ?Uuid $id;
 
     #[ORM\Column(length: 255)]
-    private ?string $originalFilename = null;
+    private ?string $originalFilename;
+
+    #[ORM\Column(length: 255)]
+    private ?string $storedFilename;
 
     #[ORM\Column(length: 10)]
-    private ?string $originalFormat = null;
+    private ?string $originalFormat;
 
     #[ORM\Column(length: 10)]
-    private ?string $targetFormat = null;
+    private ?string $targetFormat;
 
-    #[ORM\Column(length: 10)]
-    private ?string $status = self::STATUS_PENDING;
+    #[ORM\Column(length: 10, enumType: FileConversionStatus::class)]
+    private ?FileConversionStatus $status;
 
     #[ORM\Column]
-    private ?\DateTime $createdAt = null;
+    private ?\DateTimeImmutable $createdAt;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $completedAt = null;
@@ -39,12 +38,26 @@ class FileConversion
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $resultFilename = null;
 
-    public function getId(): ?int
+
+    public function __construct(
+        string $originalFilename,
+        string $originalFormat,
+        string $targetFormat
+    ) {
+        $this->id = Uuid::v4();
+        $this->originalFilename = $originalFilename;
+        $this->originalFormat = $originalFormat;
+        $this->targetFormat = $targetFormat;
+        $this->status = FileConversionStatus::PENDING;
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
+    public function getId(): ?Uuid
     {
         return $this->id;
     }
 
-    public function setId(string $id): static
+    public function setId(Uuid $id): static
     {
         $this->id = $id;
 
@@ -59,6 +72,18 @@ class FileConversion
     public function setOriginalFilename(string $originalFilename): static
     {
         $this->originalFilename = $originalFilename;
+
+        return $this;
+    }
+
+    public function getStoredFilename(): ?string
+    {
+        return $this->storedFilename;
+    }
+
+    public function setStoredFilename(string $storedFilename): static
+    {
+        $this->storedFilename = $storedFilename;
 
         return $this;
     }
@@ -87,24 +112,24 @@ class FileConversion
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?FileConversionStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(FileConversionStatus $status): static
     {
         $this->status = $status;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTime
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 
