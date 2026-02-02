@@ -1,0 +1,484 @@
+{
+  "info": {
+    "_postman_id": "3b5eff6b-4fa8-4a34-a611-e85157794496",
+    "name": "Async File Conversion",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51977823",
+    "_collection_link": "https://go.postman.co/collection/51977823-3b5eff6b-4fa8-4a34-a611-e85157794496?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Create File Conversion Should Fail With Missing Body",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 422\", function () {\r",
+              "    pm.response.to.have.status(422);\r",
+              "});\r",
+              "\r",
+              "const responseJson = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Errors object exists\", function () {\r",
+              "    pm.expect(responseJson.errors).to.be.an(\"object\", \"The 'errors' object should exist.\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"targetFormat error message is correct\", function () {\r",
+              "    const expectedFileErrorMessage = \"File is required.\";\r",
+              "    const expectedTargetFormatErrorMessage = \"Target format is required.\";\r",
+              "    pm.expect(responseJson.errors.file).to.eql(expectedFileErrorMessage, `Error message should be: \"${expectedFileErrorMessage}\"`);\r",
+              "    pm.expect(responseJson.errors.targetFormat).to.eql(expectedTargetFormatErrorMessage, `Error message should be: \"${expectedTargetFormatErrorMessage}\"`);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": []
+        },
+        "url": {
+          "raw": "{{file_conversion_api_host}}/file-conversions",
+          "host": [
+            "{{file_conversion_api_host}}"
+          ],
+          "path": [
+            "file-conversions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create File Conversion Should Fail With Empty Fields",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 422\", function () {\r",
+              "    pm.response.to.have.status(422);\r",
+              "});\r",
+              "\r",
+              "const responseJson = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Errors object exists\", function () {\r",
+              "    pm.expect(responseJson.errors).to.be.an(\"object\", \"The 'errors' object should exist.\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"targetFormat error message is correct\", function () {\r",
+              "    const expectedFileErrorMessage = \"File is required.\";\r",
+              "    const expectedTargetFormatErrorMessage = \"Target format is required.\";\r",
+              "    pm.expect(responseJson.errors.file).to.eql(expectedFileErrorMessage, `Error message should be: \"${expectedFileErrorMessage}\"`);\r",
+              "    pm.expect(responseJson.errors.targetFormat).to.eql(expectedTargetFormatErrorMessage, `Error message should be: \"${expectedTargetFormatErrorMessage}\"`);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "value": "",
+              "type": "text",
+              "uuid": "2997a4a3-81a5-4cc2-82c8-b64d575beb82"
+            },
+            {
+              "key": "targetFormat",
+              "value": "",
+              "type": "text",
+              "uuid": "41b1dd29-d02d-4132-8104-920787aa49c6"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{file_conversion_api_host}}/file-conversions",
+          "host": [
+            "{{file_conversion_api_host}}"
+          ],
+          "path": [
+            "file-conversions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create File Conversion Should Fail With Invalid TargetFormat",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 422\", function () {\r",
+              "    pm.response.to.have.status(422);\r",
+              "});\r",
+              "\r",
+              "const responseJson = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Errors object exists\", function () {\r",
+              "    pm.expect(responseJson.errors).to.be.an(\"object\", \"The 'errors' object should exist.\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"targetFormat error message is correct\", function () {\r",
+              "    const expectedErrorMessage = \"Target format must be 'json' or 'xml' (case-insensitive).\";\r",
+              "    pm.expect(responseJson.errors.targetFormat).to.eql(expectedErrorMessage, `Error message should be: \"${expectedErrorMessage}\"`);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "postman-cloud:///1f0fec1e-68f9-4c80-b7bf-765dd9f523ae"
+            },
+            {
+              "key": "target_format",
+              "value": "PDF",
+              "type": "default"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{file_conversion_api_host}}/file-conversions",
+          "host": [
+            "{{file_conversion_api_host}}"
+          ],
+          "path": [
+            "file-conversions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create File Conversion Should Fail With Invalid File Type",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 422\", function () {\r",
+              "    pm.response.to.have.status(422);\r",
+              "});\r",
+              "\r",
+              "const responseJson = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Errors object exists\", function () {\r",
+              "    pm.expect(responseJson.errors).to.be.an(\"object\", \"The 'errors' object should exist.\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"file error message is correct\", function () {\r",
+              "    const expectedErrorMessage = \"Unsupported input file type.\";\r",
+              "    pm.expect(responseJson.errors.file).to.eql(expectedErrorMessage, `Error message should be: \"${expectedErrorMessage}\"`);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "packages": {},
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "postman-cloud:///1f0fec86-bd26-4430-b663-64731e80d7b5"
+            },
+            {
+              "key": "target_format",
+              "value": "XML",
+              "type": "default"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{file_conversion_api_host}}/file-conversions",
+          "host": [
+            "{{file_conversion_api_host}}"
+          ],
+          "path": [
+            "file-conversions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create File Conversion Should Success",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 202\", function () {\r",
+              "    pm.response.to.have.status(202);\r",
+              "});\r",
+              "\r",
+              "const schema = {\r",
+              "  \"type\": \"object\",\r",
+              "  \"properties\": {\r",
+              "    \"id\": {\r",
+              "      \"type\": \"string\",\r",
+              "      \"pattern\": \"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$\"\r",
+              "    },\r",
+              "    \"original_filename\": {\r",
+              "      \"type\": \"string\"\r",
+              "    },\r",
+              "    \"stored_filename\": {\r",
+              "      \"type\": \"string\"\r",
+              "    },\r",
+              "    \"original_format\": {\r",
+              "      \"type\": \"string\"\r",
+              "    },\r",
+              "    \"target_format\": {\r",
+              "      \"type\": \"string\"\r",
+              "    },\r",
+              "    \"status\": {\r",
+              "      \"type\": \"string\",\r",
+              "      \"enum\": [\"PENDING\", \"PROCESSING\", \"COMPLETED\", \"FAILED\"]\r",
+              "    },\r",
+              "    \"created_at\": {\r",
+              "      \"type\": \"string\",\r",
+              "      \"format\": \"date-time\"\r",
+              "    },\r",
+              "    \"completed_at\": {\r",
+              "      \"type\": [\"string\", \"null\"]\r",
+              "    },\r",
+              "    \"result_filename\": {\r",
+              "      \"type\": [\"string\", \"null\"]\r",
+              "    }\r",
+              "  },\r",
+              "  \"required\": [\"id\", \"original_filename\", \"stored_filename\", \"original_format\", \"target_format\", \"status\", \"created_at\", \"completed_at\", \"result_filename\"]\r",
+              "};\r",
+              "\r",
+              "const Ajv = require('ajv');\r",
+              "const ajv = new Ajv(); \r",
+              "\r",
+              "let response = pm.response.json();\r",
+              "\r",
+              "let validate = ajv.compile(schema);\r",
+              "let valid = validate(response);\r",
+              "\r",
+              "\r",
+              "pm.test(\"Response matches JSON schema\", function () {\r",
+              "    pm.expect(valid).to.be.true;\r",
+              "});\r",
+              "\r",
+              "if(valid){\r",
+              "    pm.environment.set(\"file_conversion_id\", response.id);\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "postman-cloud:///1f0fec1e-68f9-4c80-b7bf-765dd9f523ae"
+            },
+            {
+              "key": "target_format",
+              "value": "JSON",
+              "type": "default"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{file_conversion_api_host}}/file-conversions",
+          "host": [
+            "{{file_conversion_api_host}}"
+          ],
+          "path": [
+            "file-conversions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Poll File Conversion Status",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "const schema = {\r",
+              "  \"type\": \"object\",\r",
+              "  \"properties\": {\r",
+              "    \"id\": {\r",
+              "      \"type\": \"string\",\r",
+              "      \"pattern\": \"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$\"\r",
+              "    },\r",
+              "    \"original_filename\": {\r",
+              "      \"type\": \"string\"\r",
+              "    },\r",
+              "    \"stored_filename\": {\r",
+              "      \"type\": \"string\"\r",
+              "    },\r",
+              "    \"original_format\": {\r",
+              "      \"type\": \"string\"\r",
+              "    },\r",
+              "    \"target_format\": {\r",
+              "      \"type\": \"string\"\r",
+              "    },\r",
+              "    \"status\": {\r",
+              "      \"type\": \"string\",\r",
+              "      \"enum\": [\"PENDING\", \"PROCESSING\", \"COMPLETED\", \"FAILED\"]\r",
+              "    },\r",
+              "    \"created_at\": {\r",
+              "      \"type\": \"string\",\r",
+              "      \"format\": \"date-time\"\r",
+              "    },\r",
+              "    \"completed_at\": {\r",
+              "      \"type\": [\"string\", \"null\"]\r",
+              "    },\r",
+              "    \"result_filename\": {\r",
+              "      \"type\": [\"string\", \"null\"]\r",
+              "    }\r",
+              "  },\r",
+              "  \"required\": [\"id\", \"original_filename\", \"stored_filename\", \"original_format\", \"target_format\", \"status\", \"created_at\", \"completed_at\", \"result_filename\"]\r",
+              "};\r",
+              "\r",
+              "const Ajv = require('ajv');\r",
+              "const ajv = new Ajv(); \r",
+              "\r",
+              "let response = pm.response.json();\r",
+              "\r",
+              "let validate = ajv.compile(schema);\r",
+              "let valid = validate(response);\r",
+              "\r",
+              "\r",
+              "pm.test(\"Response matches JSON schema\", function () {\r",
+              "    pm.expect(valid).to.be.true;\r",
+              "});\r",
+              "\r",
+              "const poll_max_retries = pm.environment.get('poll_max_retries') || 5;\r",
+              "let poll_retry_count = pm.environment.get('poll_retry_count') || 0;\r",
+              "\r",
+              "if (response.status !== \"COMPLETED\" && poll_retry_count < poll_max_retries) {\r",
+              "    poll_retry_count++;\r",
+              "    pm.environment.set('poll_retry_count', poll_retry_count);\r",
+              "    pm.execution.setNextRequest(\"Poll File Conversion Status\");\r",
+              "} else {\r",
+              "    pm.environment.set('poll_retry_count', 0); \r",
+              "    pm.test(\"File Conversion Status is 'COMPLETED'\", function () {\r",
+              "        pm.expect(response.status).to.eql(\"COMPLETED\");\r",
+              "    });\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "fileNotInWorkingDirectoryWarning": "This file isn't in your working directory. Teammates you share this request with won't be able to use this file. To make collaboration easier you can setup your working directory in Settings.",
+              "value": null
+            },
+            {
+              "key": "target_format",
+              "value": "xml",
+              "type": "default"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{file_conversion_api_host}}/file-conversions/{{file_conversion_id}}",
+          "host": [
+            "{{file_conversion_api_host}}"
+          ],
+          "path": [
+            "file-conversions",
+            "{{file_conversion_id}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
