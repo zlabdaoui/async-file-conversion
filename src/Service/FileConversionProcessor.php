@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\FileConversion;
-use App\Entity\FileConversionStatus;
+use App\Exception\MessageSkipException;
 use App\Repository\FileConversionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -20,6 +20,9 @@ readonly class FileConversionProcessor
     {
     }
 
+    /**
+     * @throws MessageSkipException
+     */
     public function process(string $fileConversionId): void
     {
         $fileConversion = $this->fileConversionRepository->find($fileConversionId);
@@ -28,19 +31,26 @@ readonly class FileConversionProcessor
             throw new RunTimeException("File conversion with ID $fileConversionId not found.");
         }
 
-        $fileConversion->setStatus(FileConversionStatus::PROCESSING);
+        if(!$fileConversion->isProcessable()){
+            $this->logger->info("Skipping file conversion with id $fileConversionId because it's not processable (status: {$fileConversion->getStatus()->value})", [
+                "fileConversionId" => $fileConversionId,
+                "status" => $fileConversion->getStatus()->value
+            ]);
+            throw new MessageSkipException("File conversion with id $fileConversionId is not processable, message will not be retried.");
+        }
+
+        $fileConversion->markAsProcessing();
         $this->entityManager->flush();
 
         try {
             $this->simulateConversion($fileConversion);
 
-            $fileConversion->setCompletedAt(new \DateTimeImmutable());
-            $fileConversion->setStatus(FileConversionStatus::COMPLETED);
+            $fileConversion->markAsCompleted();
             $this->entityManager->flush();
 
-            $this->logger->info("File conversion with id $fileConversionId completed successfully", ["conversionId" => $fileConversionId]);
+            $this->logger->info("File conversion with id $fileConversionId completed successfully");
         } catch (\Exception $e) {
-            $fileConversion->setStatus(FileConversionStatus::FAILED);
+            $fileConversion->markAsFailed();
             $this->entityManager->flush();
 
             $this->logger->error("File conversion with id $fileConversionId failed", [

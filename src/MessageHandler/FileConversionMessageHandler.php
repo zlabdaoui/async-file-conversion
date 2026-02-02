@@ -2,8 +2,8 @@
 
 namespace App\MessageHandler;
 
+use App\Exception\MessageSkipException;
 use App\Message\FileConversionMessage;
-use App\Service\FileConversionCreator;
 use App\Service\FileConversionProcessor;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -18,6 +18,10 @@ final class FileConversionMessageHandler
     }
     public function __invoke(FileConversionMessage $message): void
     {
-        $this->fileConversionProcessor->process($message->getFileConversionId());
+        try {
+            $this->fileConversionProcessor->process($message->getFileConversionId());
+        }catch (MessageSkipException){
+
+        }
     }
 }

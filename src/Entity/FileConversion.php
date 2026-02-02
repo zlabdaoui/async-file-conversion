@@ -40,11 +40,12 @@ class FileConversion
 
 
     public function __construct(
+        Uuid $uuid,
         string $originalFilename,
         string $originalFormat,
         string $targetFormat
     ) {
-        $this->id = Uuid::v4();
+        $this->id = $uuid;
         $this->originalFilename = $originalFilename;
         $this->originalFormat = $originalFormat;
         $this->targetFormat = $targetFormat;
@@ -158,5 +159,29 @@ class FileConversion
         $this->resultFilename = $resultFilename;
 
         return $this;
+    }
+
+    public function markAsProcessing(): static
+    {
+        $this->status = FileConversionStatus::PROCESSING;
+        return $this;
+    }
+
+    public function markAsCompleted(): static
+    {
+        $this->setCompletedAt(new \DateTimeImmutable());
+        $this->status = FileConversionStatus::COMPLETED;
+        return $this;
+    }
+
+    public function markAsFailed(): static
+    {
+        $this->status = FileConversionStatus::FAILED;
+        return $this;
+    }
+
+    public function isProcessable(): bool
+    {
+        return in_array($this->status, [FileConversionStatus::PENDING, FileConversionStatus::FAILED]);
     }
 }
