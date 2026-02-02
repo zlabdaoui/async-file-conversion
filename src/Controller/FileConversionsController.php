@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Dto\CreateFileConversionRequest;
 use App\Dto\FileConversionResponse;
 use App\Entity\FileConversion;
-use App\Service\FileConversionService;
+use App\Service\FileConversionCreator;
 use App\Validation\ApiValidationTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,9 +22,9 @@ class FileConversionsController extends AbstractController
 
     #[Route("", name: "create_file_conversion", methods: ["POST"])]
     public function create(
-        Request $request,
-        ValidatorInterface $validator,
-        FileConversionService $fileConversionService): JsonResponse
+        Request               $request,
+        ValidatorInterface    $validator,
+        FileConversionCreator $fileConversionCreator): JsonResponse
     {
         $dto = new CreateFileConversionRequest();
         $dto->setFile($request->files->get('file'));
@@ -35,7 +35,7 @@ class FileConversionsController extends AbstractController
         }
 
         try {
-            $fileConversion = $fileConversionService->create($dto);
+            $fileConversion = $fileConversionCreator->create($dto);
         } catch (\RuntimeException $e) {
             return new JsonResponse(['error' => $e->getMessage()], 500);
         }
@@ -48,7 +48,7 @@ class FileConversionsController extends AbstractController
 
     #[Route("/{id}", name: "get_file_conversion")]
     public function getById(
-        string $id,
+        string                 $id,
         EntityManagerInterface $em): JsonResponse
     {
         if (!Uuid::isValid($id)) {

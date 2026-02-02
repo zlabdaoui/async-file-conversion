@@ -6,6 +6,6 @@ enum FileConversionStatus: string
 {
     case PENDING = 'PENDING';
     case PROCESSING = 'PROCESSING';
-    case DONE = 'DONE';
+    case COMPLETED = 'COMPLETED';
     case FAILED = 'FAILED';
 }

@@ -7,7 +7,7 @@ services:
             - .:/app
         environment:
             WEB_DOCUMENT_ROOT: /app/public
-            PHP_EXTENSIONS: fileinfo
+            PHP_EXTENSIONS: fileinfo, pgsql,pdo_pgsql
         working_dir: /app
     postgres:
         image: postgres:16
